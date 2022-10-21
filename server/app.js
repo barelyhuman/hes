@@ -59,7 +59,7 @@ router.get('/ping', (_, response) => {
   return response.send({ pong: true })
 })
 
-router.get('/events', async (request, response) => {
+router.post('/events', async (request, response) => {
   switch (request.body.trigger.name) {
     case 'hashUsername': {
       const newData = request.body.event.data.new
