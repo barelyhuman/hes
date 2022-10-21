@@ -4,11 +4,11 @@ const config = require('../knexfile.js')
 let db
 
 function setup() {
-	if (db) {
-		return db
-	}
+  if (db) {
+    return db
+  }
 
-	db = knex(config)
+  db = knex(config)
 }
 
 setup()

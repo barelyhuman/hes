@@ -1,0 +1,25 @@
+table:
+  schema: public
+  name: users
+array_relationships:
+  - name: pokemons
+    using:
+      foreign_key_constraint_on:
+        column: owner_id
+        table:
+          schema: public
+          name: pokemons
+event_triggers:
+  - name: hashUsername
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      update:
+        columns:
+          - name
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: HASURA_WEBHOOK_URL

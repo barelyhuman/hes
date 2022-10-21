@@ -1,0 +1,62 @@
+version: '3.6'
+services:
+  server:
+    build:
+      context: './'
+      dockerfile: './server/Dockerfile'
+    command: "bash -c 'npx nodemon app.js'"
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    depends_on:
+      - pgbouncer
+    volumes:
+      - ./server:/server
+      - /server/node_modules
+
+  postgres:
+    image: postgres:12
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  pgbouncer:
+    image: pgbouncer/pgbouncer:1.12.0
+    ports:
+      - 6432:6432
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+  cli-migrations:
+    image: hasura/graphql-engine:v2.1.1.cli-migrations-v3
+    depends_on:
+      - pgbouncer
+      - graphql-engine
+    env_file:
+      - .env
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: $DATABASE_URL
+    volumes:
+      - ./hasura/metadata:/hasura-metadata
+      - ./hasura/migrations:/hasura-migrations
+
+  graphql-engine:
+    image: hasura/graphql-engine:v2.1.1
+    ports:
+      - '8080:8080'
+    depends_on:
+      - pgbouncer
+      - server
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: $DATABASE_URL
+    env_file:
+      - .env
+
+volumes:
+  db_data:

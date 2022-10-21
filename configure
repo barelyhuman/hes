@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Usage: configure [all|seed|migration|metadata]
+#
+# Examples:
+#   configure all                   # run migrations and metadata `apply` commands
+#   configure seed                  # run the seed command
+#   configure migration             # run migrations 
+#   configure metadata              # run metadata
+#   configure migration destroy     # delete migration data from the server
+#   configure metadata destroy      # delete metadata data from the server
+#
+# If <refspec> is not given, no "git checkout" is performed thus you get the
+# latest version of whatever branch you are currently at.
+#
+
+set -e
+
+PROG=${0##*/}
+_err() { echo -e "$PROG:" "$@" >&2 ; exit 1; }
+
+
+_cmd_all(){
+  hasura migrate apply
+  hasura metadata apply
+}
+
+_cmd_migrations(){
+    [ "$2" == "destroy" ] && _cmd_migrations_destroy && exit
+    hasura migrate apply
+}
+
+_cmd_metadata(){
+    [ "$2" == "destroy" ] && _cmd_metadata_destroy && exit
+    hasura metadata apply
+}
+
+_cmd_seed(){
+    hasura seed apply
+}
+
+_cmd_migrations_destroy(){
+    echo "deleting all migration meta from server"
+    hasura migrate delete --all --server
+}
+
+_cmd_metadata_destroy(){
+    echo "deleting all metadata information from server"
+    hasura metadata clear
+}
+
+cd "$(dirname "$0")/hasura"
+
+case "$1" in
+  a|all)          _cmd_all "$@" ;;
+  seed)           _cmd_seed "$@" ;;
+  migrations)      _cmd_migrations "$@" ;;
+  metadata)       _cmd_metadata "$@" ;;
+  *)              _err "unrecognized command: $COMMAND" ;;
+esac
