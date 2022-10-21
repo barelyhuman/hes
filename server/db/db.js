@@ -4,13 +4,7 @@ const config = require('../knexfile.js')
 let db
 
 function setup() {
-  if (db) {
-    return db
-  }
-
-  db = knex(config)
+  return db || ((db = knex(config)), db)
 }
 
-setup()
-
-module.exports = db
+module.exports = setup()
