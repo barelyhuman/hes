@@ -30,6 +30,31 @@ router.get('/all', async (_, response) => {
   })
 })
 
+router.get('/authenticate', async (req, res) => {
+  const authToken = req.headers['authorization'] || req.headers['Authorization']
+
+  if (authToken) {
+    // Add in your authentication parameters
+    return res.status(200).json({
+      'x-Hasura-Role': 'user',
+    })
+  }
+
+  return res.status(401).end()
+})
+
+// user authenticates themselves using https://api.example.com/v1/login
+// then uses the returned token on https://api.example.com/graphql or https://api.example.com/console (hasura)
+// which get's it back to https://api.example.com/v1/authenticate , validates the role and id of user
+// which can then be used by hasura permissions
+//
+// TODO: change this to a POST request first.
+router.get('/login', (req, res) => {
+  return res.json({
+    token: '123',
+  })
+})
+
 router.get('/ping', (_, response) => {
   return response.send({ pong: true })
 })
@@ -49,7 +74,7 @@ router.get('/events', async (request, response) => {
   }
 })
 
-app.use('/api', router)
+app.use('/v1', router)
 
 app.listen(port, () => {
   console.log(`>> Listening on ${port}`)
