@@ -7,7 +7,7 @@
 #==========INSTRUCTIONS=============#
 
 deploy:
-	ssh -i ~/.ssh/app user@api.example.com:/var/www/app/update
+	ssh -i ~/.ssh/app user@api.example.com:/var/www/app/update restart
 
 deploy_staging:
-	ssh -i ~/.ssh/app user@api.staging.example.com:/var/www/app/update
+	ssh -i ~/.ssh/app user@api.staging.example.com:/var/www/app/update restart
