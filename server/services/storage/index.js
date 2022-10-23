@@ -1,6 +1,6 @@
 const { StorageManager } = require('@slynova/flydrive')
 const { AmazonWebServicesS3Storage } = require('@slynova/flydrive-s3')
-const config = require('../config/storage')
+const config = require('./config')
 
 function Storage() {
   const storage = new StorageManager(config)
