@@ -74,7 +74,7 @@ router.post('/events', async (request, response) => {
   }
 })
 
-app.use('/v1', router)
+app.use('/rest/v1', router)
 
 app.listen(port, () => {
   console.log(`>> Listening on ${port}`)
