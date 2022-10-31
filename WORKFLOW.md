@@ -44,7 +44,7 @@ cp .env.example .env
 # copy the base setup for hasura console, you'll have to
 # modify these to match your .env settings for hasura or
 # any changes you make in docker compose
-cp ./hasura/config.example.yml ./hasura/config.yml
+cp ./hasura/config.example.yaml ./hasura/config.yaml
 
 # to run in the foreground
 docker compose up
